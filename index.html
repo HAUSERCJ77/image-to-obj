@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2D → 3D Model Generator</title>
+</head>
+<body>
+<h1>Upload Image to Generate 3D Model</h1>
+<input type="file" id="imageInput" accept="image/*">
+<button onclick="uploadImage()">Generate 3D Model</button>
+<p id="status"></p>
+
+<script>
+async function uploadImage() {
+    const input = document.getElementById("imageInput");
+    if (!input.files[0]) { alert("Select an image!"); return; }
+    const file = input.files[0];
+    const status = document.getElementById("status");
+    status.innerText = "Uploading...";
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+        // Change this URL to your Hugging Face Space Gradio API
+        const hfUrl = "https://your-space-name.hf.space/run/predict";
+        const response = await fetch(hfUrl, {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+        const downloadUrl = data.data[0]; // assuming Gradio returns obj file URL
+        status.innerHTML = `✅ Done! <a href="${downloadUrl}" target="_blank">Download 3D Model</a>`;
+    } catch (err) {
+        console.error(err);
+        status.innerText = "❌ Something went wrong!";
+    }
+}
+</script>
+</body>
+</html>
