@@ -1,0 +1,5 @@
+torch
+torchvision
+torchaudio
+git+https://github.com/openai/shap-e.git
+Pillow
